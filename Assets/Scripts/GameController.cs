@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        gameControllerPod = new GameControllerPod();
+        gameControllerPod = new GameControllerPod(spawnGridSetting);
         virtualKeyboardView.DoInit(gameControllerPod);
         DoInit();
     }
@@ -37,22 +37,23 @@ public class GameController : MonoBehaviour
 
         gameControllerPod.setWords(JsonUtility.FromJson<WordData>(jsonFile.text).words);
         gameControllerPod.setCurrentWord(
-            gameControllerPod.words[UnityEngine.Random.Range(0, gameControllerPod.words.Length)]
+            gameControllerPod.wordsData[
+                UnityEngine.Random.Range(0, gameControllerPod.wordsData.Length)
+            ]
         );
         answerUIView.SetAnswer(gameControllerPod.currentWord);
 
         SpawnCharacterCellGroup();
-
-        gameControllerPod.currentDataEvent.Invoke(new Vector2(0, 0), "");
     }
 
     private void SpawnCharacterCellGroup()
     {
-        for (int i = 0; i < spawnGridSetting.x; i++)
+        for (int i = 0; i < spawnGridSetting.y; i++)
         {
-            for (int j = 0; j < spawnGridSetting.y; j++)
+            for (int j = 0; j < spawnGridSetting.x; j++)
             {
                 GameObject characterCell = Instantiate(characterPrefab, spawnerObject.transform);
+                characterCell.name = $"CharacterCell_{i}_{j}";
                 CharacterCellData characterCellData = new CharacterCellData(
                     new Vector2(j, i),
                     CharacterCellType.Idle

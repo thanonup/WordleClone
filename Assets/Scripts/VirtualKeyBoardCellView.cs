@@ -12,11 +12,28 @@ public class VirtualKeyBoardCellView : MonoBehaviour
 
     private GameControllerPod gameControllerPod;
 
-    public void DoInit(string character, GameControllerPod gameControllerPod)
+    public void DoInit(string character, GameControllerPod pod)
     {
+        gameControllerPod = pod;
         keyBoardText.text = character;
-        keyBoardButton.onClick.AddListener(() => {
-            // gameControllerPod.currentPosition.Invoke(new Vector2(0, 0), character);
+        keyBoardButton.onClick.AddListener(() =>
+        {
+            if (character == "Enter")
+            {
+                Debug.Log("Button Clicked: Enter");
+            }
+            else if (character == "Del")
+            {
+                Debug.Log("Button Clicked: Del");
+                gameControllerPod.setPrevPosition();
+                gameControllerPod.updateDataEvent.Invoke("");
+            }
+            else
+            {
+                Debug.Log("Button Clicked: " + character);
+                gameControllerPod.updateDataEvent.Invoke(character);
+                gameControllerPod.setNextPosition();
+            }
         });
     }
 }

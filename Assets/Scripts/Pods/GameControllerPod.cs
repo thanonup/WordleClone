@@ -4,27 +4,46 @@ using UnityEngine.Events;
 
 public class GameControllerPod
 {
-    public UnityEvent<Vector2, string> currentDataEvent = new UnityEvent<Vector2, string>();
-    public string[] words;
+    public UnityEvent<string> updateDataEvent = new UnityEvent<string>();
+    public string[] wordsData;
 
+    public Vector2 spawnGridSetting;
     public Vector2 currentPosition;
     public string currentWord;
 
-    public GameControllerPod()
+    public GameControllerPod(Vector2 spawnGridSetting)
     {
-        currentDataEvent.AddListener(
-            (vec2, character) =>
+        this.spawnGridSetting = spawnGridSetting;
+        updateDataEvent.AddListener(
+            (character) =>
             {
-                currentPosition = vec2;
                 currentWord = character;
-                Debug.Log($"Current Position: {vec2} Character: {character}");
+                Debug.Log($"Current Position: {currentPosition} Character: {character}");
             }
         );
     }
 
+    public void setNextPosition()
+    {
+        currentPosition.x += 1;
+        if (currentPosition.x > spawnGridSetting.x)
+        {
+            currentPosition.x = spawnGridSetting.x;
+        }
+    }
+
+    public void setPrevPosition()
+    {
+        currentPosition.x -= 1;
+        if (currentPosition.x < 0)
+        {
+            currentPosition.x = 0;
+        }
+    }
+
     public void setWords(string[] words)
     {
-        this.words = words;
+        this.wordsData = words;
 
         Debug.Log(string.Join(", ", words));
     }

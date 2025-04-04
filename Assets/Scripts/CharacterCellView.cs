@@ -30,13 +30,15 @@ public class CharacterCellView : MonoBehaviour
 
     private void AddListener()
     {
-        gameControllerPod.currentDataEvent.AddListener(
-            (vec2, character) =>
+        gameControllerPod.updateDataEvent.AddListener(
+            (character) =>
             {
-                if (characterCellData.position == vec2)
+                if (characterCellData.position == gameControllerPod.currentPosition)
                 {
                     characterText.text = character;
-                    // SetCharacterCellType();
+                    SetCharacterCellType(
+                        character == "" ? CharacterCellType.Idle : CharacterCellType.Typing
+                    );
                 }
             }
         );
