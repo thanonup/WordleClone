@@ -18,21 +18,40 @@ public class CharacterCellView : MonoBehaviour
 
     private CharacterCellData characterCellData;
 
-    public void DoInit(CharacterCellData characterCellData)
+    private GameControllerPod gameControllerPod;
+
+    public void DoInit(CharacterCellData characterCellData, GameControllerPod gameControllerPod)
     {
         this.characterCellData = characterCellData;
-        SetCharacterCellType();
+        this.gameControllerPod = gameControllerPod;
+        SetCharacterCellType(characterCellData.characterCellType);
+        AddListener();
     }
 
-    private void SetCharacterCellType()
+    private void AddListener()
     {
-        characterText.gameObject.SetActive(
-            characterCellData.characterCellType != CharacterCellType.Idle
+        gameControllerPod.currentDataEvent.AddListener(
+            (vec2, character) =>
+            {
+                if (characterCellData.position == vec2)
+                {
+                    characterText.text = character;
+                    // SetCharacterCellType();
+                }
+            }
         );
-        switch (characterCellData.characterCellType)
+    }
+
+    private void SetCharacterCellType(CharacterCellType characterCellType)
+    {
+        characterText.gameObject.SetActive(characterCellType != CharacterCellType.Idle);
+        switch (characterCellType)
         {
             case CharacterCellType.Idle:
                 setCellStyle("#181818", "#656565");
+                break;
+            case CharacterCellType.Typing:
+                setCellStyle("#181818", "#A6A6A6");
                 break;
             case CharacterCellType.Correct:
                 setCellStyle("#2EB245", "#2EB245");

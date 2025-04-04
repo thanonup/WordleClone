@@ -19,11 +19,15 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private AnswerUIView answerUIView;
 
+    [SerializeField]
+    private VirtualKeyboardView virtualKeyboardView;
+
     private GameControllerPod gameControllerPod;
 
     void Start()
     {
         gameControllerPod = new GameControllerPod();
+        virtualKeyboardView.DoInit(gameControllerPod);
         DoInit();
     }
 
@@ -38,6 +42,8 @@ public class GameController : MonoBehaviour
         answerUIView.SetAnswer(gameControllerPod.currentWord);
 
         SpawnCharacterCellGroup();
+
+        gameControllerPod.currentDataEvent.Invoke(new Vector2(0, 0), "");
     }
 
     private void SpawnCharacterCellGroup()
@@ -51,7 +57,9 @@ public class GameController : MonoBehaviour
                     new Vector2(j, i),
                     CharacterCellType.Idle
                 );
-                characterCell.GetComponent<CharacterCellView>().DoInit(characterCellData);
+                characterCell
+                    .GetComponent<CharacterCellView>()
+                    .DoInit(characterCellData, gameControllerPod);
             }
         }
     }
