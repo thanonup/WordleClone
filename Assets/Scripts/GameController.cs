@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -25,6 +22,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private PopupMessageView popupMessageView;
 
+    [SerializeField]
+    private EndGameView endGameView;
+
     private GameControllerPod gameControllerPod;
 
     void Start()
@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour
         gameControllerPod = new GameControllerPod(spawnGridSetting);
         virtualKeyboardView.DoInit(gameControllerPod);
         popupMessageView.DoInit(gameControllerPod);
+        endGameView.DoInit(gameControllerPod);
 
         TextAsset jsonFile = Resources.Load<TextAsset>("words");
         gameControllerPod.SetWords(JsonUtility.FromJson<WordData>(jsonFile.text).words);
@@ -46,9 +47,15 @@ public class GameController : MonoBehaviour
         gameControllerPod.gameStateEvent.AddListener(
             (gameState) =>
             {
-                Debug.Log($"Game State: {gameState}");
                 if (gameState == GameState.Start)
                 {
+                    gameControllerPod.resetAll();
+                    foreach (Transform child in spawnerObject.transform)
+                    {
+                        Destroy(child.gameObject);
+                    }
+
+                    gameControllerPod.popupMessage.Invoke("");
                     gameControllerPod.SetCurrentWord(
                         gameControllerPod.wordsData[
                             UnityEngine.Random.Range(0, gameControllerPod.wordsData.Length)

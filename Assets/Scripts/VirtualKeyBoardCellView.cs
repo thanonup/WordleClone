@@ -23,7 +23,6 @@ public class VirtualKeyBoardCellView : MonoBehaviour
 
             if (character == "Enter")
             {
-                Debug.Log("Button Clicked: Enter");
                 if (
                     gameControllerPod.currentLineAnswer.Length
                     == gameControllerPod.spawnGridSetting.x
@@ -39,14 +38,12 @@ public class VirtualKeyBoardCellView : MonoBehaviour
             }
             else if (character == "Del")
             {
-                Debug.Log("Button Clicked: Del");
                 gameControllerPod.SetPrevPosition();
                 gameControllerPod.updateDataEvent.Invoke("");
                 gameControllerPod.popupMessage.Invoke("");
             }
             else
             {
-                Debug.Log("Button Clicked: " + character);
                 gameControllerPod.updateDataEvent.Invoke(character);
                 gameControllerPod.SetNextPosition();
                 gameControllerPod.popupMessage.Invoke("");

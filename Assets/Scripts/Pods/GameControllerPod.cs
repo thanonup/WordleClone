@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,9 +33,6 @@ public class GameControllerPod
 
                     currentLineAnswer += character;
                 }
-
-                Debug.Log($"Current Position: {currentPosition} Character: {character}");
-                Debug.Log($"Current Line Answer : {currentLineAnswer}");
             }
         );
 
@@ -48,25 +44,31 @@ public class GameControllerPod
         );
     }
 
+    public void resetAll()
+    {
+        currentPosition.x = 0;
+        currentPosition.y = 0;
+        currentLineAnswer = "";
+        answerWord = "";
+    }
+
     public void CheckAnswer()
     {
         if (currentLineAnswer.ToLower() == answerWord.ToLower())
         {
-            Debug.Log("Correct Answer");
-            popupMessage.Invoke("Correct Answer!!");
+            popupMessage.Invoke("-- Correct Answer!! --");
             gameStateEvent.Invoke(GameState.End);
         }
         else
         {
             if (currentPosition.y >= spawnGridSetting.y - 1)
             {
-                popupMessage.Invoke("Game Over");
+                popupMessage.Invoke("Answers is : " + answerWord.ToUpper());
                 gameStateEvent.Invoke(GameState.End);
                 return;
             }
             else
             {
-                Debug.Log("Next Line");
                 SetNextLinePosition();
             }
         }

@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class CharacterCellView : MonoBehaviour
@@ -30,43 +27,44 @@ public class CharacterCellView : MonoBehaviour
 
     private void AddListener()
     {
-        gameControllerPod.updateDataEvent.AddListener(
-            (character) =>
-            {
-                if (characterCellData.position == gameControllerPod.currentPosition)
-                {
-                    characterText.text = character;
-                    SetCharacterCellType(
-                        character == "" ? CharacterCellType.Idle : CharacterCellType.Typing
-                    );
-                }
-            }
-        );
+        gameControllerPod.updateDataEvent.AddListener(onUpdateDataEvent);
+        gameControllerPod.summitAnswerEvent.AddListener(summitAnswerEvent);
+    }
 
-        gameControllerPod.summitAnswerEvent.AddListener(() =>
+    private void onUpdateDataEvent(string character)
+    {
+        if (characterCellData.position == gameControllerPod.currentPosition)
         {
-            if (characterCellData.position.y != gameControllerPod.currentPosition.y)
-                return;
+            characterText.text = character;
+            SetCharacterCellType(
+                character == "" ? CharacterCellType.Idle : CharacterCellType.Typing
+            );
+        }
+    }
 
-            string answer = gameControllerPod.answerWord.ToLower();
-            string guessAnswer = gameControllerPod.currentLineAnswer.ToLower();
-            char guessedChar = guessAnswer[(int)characterCellData.position.x];
-            if (answer.Contains(guessedChar))
+    private void summitAnswerEvent()
+    {
+        if (characterCellData.position.y != gameControllerPod.currentPosition.y)
+            return;
+
+        string answer = gameControllerPod.answerWord.ToLower();
+        string guessAnswer = gameControllerPod.currentLineAnswer.ToLower();
+        char guessedChar = guessAnswer[(int)characterCellData.position.x];
+        if (answer.Contains(guessedChar))
+        {
+            if (guessedChar == answer[(int)characterCellData.position.x])
             {
-                if (guessedChar == answer[(int)characterCellData.position.x])
-                {
-                    SetCharacterCellType(CharacterCellType.Correct);
-                }
-                else
-                {
-                    SetCharacterCellType(CharacterCellType.WrongPosition);
-                }
+                SetCharacterCellType(CharacterCellType.Correct);
             }
             else
             {
-                SetCharacterCellType(CharacterCellType.Wrong);
+                SetCharacterCellType(CharacterCellType.WrongPosition);
             }
-        });
+        }
+        else
+        {
+            SetCharacterCellType(CharacterCellType.Wrong);
+        }
     }
 
     private void SetCharacterCellType(CharacterCellType characterCellType)
@@ -101,5 +99,11 @@ public class CharacterCellView : MonoBehaviour
         Color outlineColor;
         ColorUtility.TryParseHtmlString(outlineColorCode, out outlineColor);
         outlineImage.effectColor = outlineColor;
+    }
+
+    void OnDestroy()
+    {
+        gameControllerPod.updateDataEvent.RemoveListener(onUpdateDataEvent);
+        gameControllerPod.summitAnswerEvent.RemoveListener(summitAnswerEvent);
     }
 }
