@@ -35,7 +35,7 @@ public class EndGameView : MonoBehaviour
             endGameText.text =
                 "You guessed the word: "
                 + ((int)gameControllerPod.currentPosition.y + 1)
-                + " times";
+                + $" / {gameControllerPod.spawnGridSetting.y} Times \n Answer is: {gameControllerPod.answerWord.ToUpper()}";
         }
     }
 
