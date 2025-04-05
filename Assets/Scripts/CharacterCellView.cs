@@ -42,6 +42,31 @@ public class CharacterCellView : MonoBehaviour
                 }
             }
         );
+
+        gameControllerPod.summitAnswerEvent.AddListener(() =>
+        {
+            if (characterCellData.position.y != gameControllerPod.currentPosition.y)
+                return;
+
+            string answer = gameControllerPod.answerWord.ToLower();
+            string guessAnswer = gameControllerPod.currentLineAnswer.ToLower();
+            char guessedChar = guessAnswer[(int)characterCellData.position.x];
+            if (answer.Contains(guessedChar))
+            {
+                if (guessedChar == answer[(int)characterCellData.position.x])
+                {
+                    SetCharacterCellType(CharacterCellType.Correct);
+                }
+                else
+                {
+                    SetCharacterCellType(CharacterCellType.WrongPosition);
+                }
+            }
+            else
+            {
+                SetCharacterCellType(CharacterCellType.Wrong);
+            }
+        });
     }
 
     private void SetCharacterCellType(CharacterCellType characterCellType)
@@ -50,24 +75,24 @@ public class CharacterCellView : MonoBehaviour
         switch (characterCellType)
         {
             case CharacterCellType.Idle:
-                setCellStyle("#181818", "#656565");
+                SetCellStyle("#181818", "#656565");
                 break;
             case CharacterCellType.Typing:
-                setCellStyle("#181818", "#A6A6A6");
+                SetCellStyle("#181818", "#A6A6A6");
                 break;
             case CharacterCellType.Correct:
-                setCellStyle("#2EB245", "#2EB245");
+                SetCellStyle("#2EB245", "#2EB245");
                 break;
             case CharacterCellType.Wrong:
-                setCellStyle("#656565", "#656565");
+                SetCellStyle("#656565", "#656565");
                 break;
             case CharacterCellType.WrongPosition:
-                setCellStyle("#CBBB3E", "#CBBB3E");
+                SetCellStyle("#CBBB3E", "#CBBB3E");
                 break;
         }
     }
 
-    private void setCellStyle(string backgroundColorCode, string outlineColorCode)
+    private void SetCellStyle(string backgroundColorCode, string outlineColorCode)
     {
         Color backgroundColor;
         ColorUtility.TryParseHtmlString(backgroundColorCode, out backgroundColor);

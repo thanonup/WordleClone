@@ -17,10 +17,13 @@ public class GameController : MonoBehaviour
     private GameObject spawnerObject;
 
     [SerializeField]
-    private AnswerUIView answerUIView;
+    private AnswerHintUIView answerUIView;
 
     [SerializeField]
     private VirtualKeyboardView virtualKeyboardView;
+
+    [SerializeField]
+    private PopupMessageView popupMessageView;
 
     private GameControllerPod gameControllerPod;
 
@@ -28,22 +31,35 @@ public class GameController : MonoBehaviour
     {
         gameControllerPod = new GameControllerPod(spawnGridSetting);
         virtualKeyboardView.DoInit(gameControllerPod);
+        popupMessageView.DoInit(gameControllerPod);
+
+        TextAsset jsonFile = Resources.Load<TextAsset>("words");
+        gameControllerPod.SetWords(JsonUtility.FromJson<WordData>(jsonFile.text).words);
+
         DoInit();
+
+        gameControllerPod.gameStateEvent.Invoke(GameState.Start);
     }
 
     public void DoInit()
     {
-        TextAsset jsonFile = Resources.Load<TextAsset>("words");
+        gameControllerPod.gameStateEvent.AddListener(
+            (gameState) =>
+            {
+                Debug.Log($"Game State: {gameState}");
+                if (gameState == GameState.Start)
+                {
+                    gameControllerPod.SetCurrentWord(
+                        gameControllerPod.wordsData[
+                            UnityEngine.Random.Range(0, gameControllerPod.wordsData.Length)
+                        ]
+                    );
+                    answerUIView.SetAnswer(gameControllerPod.answerWord);
 
-        gameControllerPod.setWords(JsonUtility.FromJson<WordData>(jsonFile.text).words);
-        gameControllerPod.setCurrentWord(
-            gameControllerPod.wordsData[
-                UnityEngine.Random.Range(0, gameControllerPod.wordsData.Length)
-            ]
+                    SpawnCharacterCellGroup();
+                }
+            }
         );
-        answerUIView.SetAnswer(gameControllerPod.currentWord);
-
-        SpawnCharacterCellGroup();
     }
 
     private void SpawnCharacterCellGroup()

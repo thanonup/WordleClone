@@ -15,10 +15,10 @@ public class VirtualKeyboardView : MonoBehaviour
     public void DoInit(GameControllerPod gameControllerPod)
     {
         this.gameControllerPod = gameControllerPod;
-        createVirtualKeyboard();
+        CreateVirtualKeyboard();
     }
 
-    private void createVirtualKeyboard()
+    private void CreateVirtualKeyboard()
     {
         List<List<string>> keyboards = new List<List<string>>
         {

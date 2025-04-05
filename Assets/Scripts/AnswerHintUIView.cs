@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class AnswerUIView : MonoBehaviour
+public class AnswerHintUIView : MonoBehaviour
 {
     [SerializeField]
     private TMP_Text answerText;
