@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0f9e92b6efe40f59898f8c30dfbe35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnGridSetting: {x: 5, y: 2}
+  spawnGridSetting: {x: 5, y: 6}
   characterPrefab: {fileID: 4724788830375928654, guid: 151981edced29430a873a9f84df11398, type: 3}
   spawnerObject: {fileID: 491373440}
   answerUIView: {fileID: 1802954488}
