@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,14 +9,16 @@ public class GameControllerPod
     public UnityEvent summitAnswerEvent = new UnityEvent();
     public UnityEvent<string, CharacterCellType> updateUsedKeyEvent =
         new UnityEvent<string, CharacterCellType>();
-    public UnityEvent<string> popupMessage = new UnityEvent<string>();
+
+    public UnityEvent<string> popupMessageEvent = new UnityEvent<string>();
     public string[] wordsData;
 
     public GameState gameState;
     public Vector2 spawnGridSetting;
     public Vector2 currentPosition;
     public string answerWord;
-    public string currentLineAnswer = "";
+    public string currentLineTypingAnswer = "";
+    public List<string> usedKeyList = new List<string>();
 
     public GameControllerPod(Vector2 spawnGridSetting)
     {
@@ -25,15 +28,17 @@ public class GameControllerPod
             {
                 if (character == "")
                 {
-                    if (currentLineAnswer != "")
-                        currentLineAnswer = currentLineAnswer.Remove(currentLineAnswer.Length - 1);
+                    if (currentLineTypingAnswer != "")
+                        currentLineTypingAnswer = currentLineTypingAnswer.Remove(
+                            currentLineTypingAnswer.Length - 1
+                        );
                 }
                 else
                 {
-                    if (currentLineAnswer.Length >= spawnGridSetting.x)
+                    if (currentLineTypingAnswer.Length >= spawnGridSetting.x)
                         return;
 
-                    currentLineAnswer += character;
+                    currentLineTypingAnswer += character;
                 }
             }
         );
@@ -48,24 +53,25 @@ public class GameControllerPod
 
     public void resetAll()
     {
+        usedKeyList.Clear();
         currentPosition.x = 0;
         currentPosition.y = 0;
-        currentLineAnswer = "";
+        currentLineTypingAnswer = "";
         answerWord = "";
     }
 
     public void CheckAnswer()
     {
-        if (currentLineAnswer.ToLower() == answerWord.ToLower())
+        if (currentLineTypingAnswer.ToLower() == answerWord.ToLower())
         {
-            popupMessage.Invoke("-- Correct Answer!! --");
+            popupMessageEvent.Invoke("-- Correct Answer!! --");
             gameStateEvent.Invoke(GameState.End);
         }
         else
         {
             if (currentPosition.y >= spawnGridSetting.y - 1)
             {
-                popupMessage.Invoke("Answers is : " + answerWord.ToUpper());
+                popupMessageEvent.Invoke("Answers is : " + answerWord.ToUpper());
                 gameStateEvent.Invoke(GameState.End);
                 return;
             }
@@ -80,7 +86,7 @@ public class GameControllerPod
     {
         if (currentPosition.y >= spawnGridSetting.y)
             return;
-        currentLineAnswer = "";
+        currentLineTypingAnswer = "";
         currentPosition.x = 0;
         currentPosition.y += 1;
     }
@@ -114,5 +120,14 @@ public class GameControllerPod
     public void SetCurrentWord(string currentWord)
     {
         this.answerWord = currentWord;
+    }
+
+    public void UpdateUsedKey(string key, CharacterCellType type)
+    {
+        if (!usedKeyList.Contains(key))
+        {
+            usedKeyList.Add(key);
+            updateUsedKeyEvent.Invoke(key, type);
+        }
     }
 }

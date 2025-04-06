@@ -25,13 +25,22 @@ public class CharacterCellView : MonoBehaviour
         AddListener();
     }
 
-    private void AddListener()
+    public CharacterCellData GetCharacterCellData()
     {
-        gameControllerPod.updateDataEvent.AddListener(onUpdateDataEvent);
-        gameControllerPod.summitAnswerEvent.AddListener(summitAnswerEvent);
+        return characterCellData;
     }
 
-    private void onUpdateDataEvent(string character)
+    public string GetCurrentCharInput()
+    {
+        return characterText.text;
+    }
+
+    private void AddListener()
+    {
+        gameControllerPod.updateDataEvent.AddListener(OnUpdateDataEvent);
+    }
+
+    private void OnUpdateDataEvent(string character)
     {
         if (characterCellData.position == gameControllerPod.currentPosition)
         {
@@ -42,44 +51,7 @@ public class CharacterCellView : MonoBehaviour
         }
     }
 
-    private void summitAnswerEvent()
-    {
-        if (characterCellData.position.y != gameControllerPod.currentPosition.y)
-            return;
-
-        string answer = gameControllerPod.answerWord.ToLower();
-        string guessAnswer = gameControllerPod.currentLineAnswer.ToLower();
-        char guessedChar = guessAnswer[(int)characterCellData.position.x];
-        if (answer.Contains(guessedChar))
-        {
-            if (guessedChar == answer[(int)characterCellData.position.x])
-            {
-                CharacterCellType characterCellType = CharacterCellType.Correct;
-                SetCharacterCellType(characterCellType);
-                gameControllerPod.updateUsedKeyEvent.Invoke(
-                    guessedChar.ToString(),
-                    characterCellType
-                );
-            }
-            else
-            {
-                CharacterCellType characterCellType = CharacterCellType.WrongPosition;
-                SetCharacterCellType(characterCellType);
-                gameControllerPod.updateUsedKeyEvent.Invoke(
-                    guessedChar.ToString(),
-                    characterCellType
-                );
-            }
-        }
-        else
-        {
-            CharacterCellType characterCellType = CharacterCellType.Wrong;
-            SetCharacterCellType(characterCellType);
-            gameControllerPod.updateUsedKeyEvent.Invoke(guessedChar.ToString(), characterCellType);
-        }
-    }
-
-    private void SetCharacterCellType(CharacterCellType characterCellType)
+    public void SetCharacterCellType(CharacterCellType characterCellType)
     {
         characterText.gameObject.SetActive(characterCellType != CharacterCellType.Idle);
         switch (characterCellType)
@@ -115,7 +87,6 @@ public class CharacterCellView : MonoBehaviour
 
     void OnDestroy()
     {
-        gameControllerPod.updateDataEvent.RemoveListener(onUpdateDataEvent);
-        gameControllerPod.summitAnswerEvent.RemoveListener(summitAnswerEvent);
+        gameControllerPod.updateDataEvent.RemoveListener(OnUpdateDataEvent);
     }
 }

@@ -27,29 +27,28 @@ public class VirtualKeyBoardCellView : MonoBehaviour
             if (character == "Enter")
             {
                 if (
-                    gameControllerPod.currentLineAnswer.Length
+                    gameControllerPod.currentLineTypingAnswer.Length
                     == gameControllerPod.spawnGridSetting.x
                 )
                 {
                     gameControllerPod.summitAnswerEvent.Invoke();
-                    gameControllerPod.CheckAnswer();
                 }
                 else
                 {
-                    gameControllerPod.popupMessage.Invoke("Not enough letters");
+                    gameControllerPod.popupMessageEvent.Invoke("Not enough letters");
                 }
             }
             else if (character == "Del")
             {
                 gameControllerPod.SetPrevPosition();
                 gameControllerPod.updateDataEvent.Invoke("");
-                gameControllerPod.popupMessage.Invoke("");
+                gameControllerPod.popupMessageEvent.Invoke("");
             }
             else
             {
                 gameControllerPod.updateDataEvent.Invoke(character);
                 gameControllerPod.SetNextPosition();
-                gameControllerPod.popupMessage.Invoke("");
+                gameControllerPod.popupMessageEvent.Invoke("");
             }
         });
 

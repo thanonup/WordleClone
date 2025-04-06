@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -25,6 +26,7 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private EndGameView endGameView;
 
+    private List<CharacterCellView> characterCellViewList = new List<CharacterCellView>();
     private GameControllerPod gameControllerPod;
 
     void Start()
@@ -49,13 +51,14 @@ public class GameController : MonoBehaviour
             {
                 if (gameState == GameState.Start)
                 {
+                    characterCellViewList.Clear();
                     gameControllerPod.resetAll();
                     foreach (Transform child in spawnerObject.transform)
                     {
                         Destroy(child.gameObject);
                     }
 
-                    gameControllerPod.popupMessage.Invoke("");
+                    gameControllerPod.popupMessageEvent.Invoke("");
                     gameControllerPod.SetCurrentWord(
                         gameControllerPod.wordsData[
                             UnityEngine.Random.Range(0, gameControllerPod.wordsData.Length)
@@ -67,6 +70,8 @@ public class GameController : MonoBehaviour
                 }
             }
         );
+
+        gameControllerPod.summitAnswerEvent.AddListener(OnSummitAnswerEvent);
     }
 
     private void SpawnCharacterCellGroup()
@@ -81,10 +86,47 @@ public class GameController : MonoBehaviour
                     new Vector2(j, i),
                     CharacterCellType.Idle
                 );
-                characterCell
-                    .GetComponent<CharacterCellView>()
-                    .DoInit(characterCellData, gameControllerPod);
+
+                CharacterCellView cell = characterCell.GetComponent<CharacterCellView>();
+                cell.DoInit(characterCellData, gameControllerPod);
+
+                characterCellViewList.Add(cell);
             }
         }
+    }
+
+    private void OnSummitAnswerEvent()
+    {
+        List<char> answerCharacterLineTemp = new List<char>();
+        List<CharacterCellView> currentLine = characterCellViewList.FindAll(cell =>
+            (int)cell.GetCharacterCellData().position.y == (int)gameControllerPod.currentPosition.y
+        );
+
+        string answer = gameControllerPod.answerWord.ToLower();
+
+        for (int i = 0; i < currentLine.Count; i++)
+        {
+            CharacterCellView cell = currentLine[i];
+            char guessedChar = cell.GetCurrentCharInput().ToLower()[0];
+            CharacterCellType characterCellType;
+
+            if (answer.Contains(guessedChar) && !answerCharacterLineTemp.Contains(guessedChar))
+            {
+                answerCharacterLineTemp.Add(guessedChar);
+                characterCellType =
+                    guessedChar == answer[i]
+                        ? CharacterCellType.Correct
+                        : CharacterCellType.WrongPosition;
+            }
+            else
+            {
+                characterCellType = CharacterCellType.Wrong;
+            }
+
+            cell.SetCharacterCellType(characterCellType);
+            gameControllerPod.UpdateUsedKey(guessedChar.ToString(), characterCellType);
+        }
+
+        gameControllerPod.CheckAnswer();
     }
 }

@@ -15,7 +15,7 @@ public class PopupMessageView : MonoBehaviour
         gameObject.SetActive(false);
 
         this.gameControllerPod = gameControllerPod;
-        gameControllerPod.popupMessage.AddListener(
+        gameControllerPod.popupMessageEvent.AddListener(
             (message) =>
             {
                 if (message == "")
