@@ -6,6 +6,8 @@ public class GameControllerPod
     public UnityEvent<GameState> gameStateEvent = new UnityEvent<GameState>();
     public UnityEvent<string> updateDataEvent = new UnityEvent<string>();
     public UnityEvent summitAnswerEvent = new UnityEvent();
+    public UnityEvent<string, CharacterCellType> updateUsedKeyEvent =
+        new UnityEvent<string, CharacterCellType>();
     public UnityEvent<string> popupMessage = new UnityEvent<string>();
     public string[] wordsData;
 

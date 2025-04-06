@@ -54,16 +54,28 @@ public class CharacterCellView : MonoBehaviour
         {
             if (guessedChar == answer[(int)characterCellData.position.x])
             {
-                SetCharacterCellType(CharacterCellType.Correct);
+                CharacterCellType characterCellType = CharacterCellType.Correct;
+                SetCharacterCellType(characterCellType);
+                gameControllerPod.updateUsedKeyEvent.Invoke(
+                    guessedChar.ToString(),
+                    characterCellType
+                );
             }
             else
             {
-                SetCharacterCellType(CharacterCellType.WrongPosition);
+                CharacterCellType characterCellType = CharacterCellType.WrongPosition;
+                SetCharacterCellType(characterCellType);
+                gameControllerPod.updateUsedKeyEvent.Invoke(
+                    guessedChar.ToString(),
+                    characterCellType
+                );
             }
         }
         else
         {
-            SetCharacterCellType(CharacterCellType.Wrong);
+            CharacterCellType characterCellType = CharacterCellType.Wrong;
+            SetCharacterCellType(characterCellType);
+            gameControllerPod.updateUsedKeyEvent.Invoke(guessedChar.ToString(), characterCellType);
         }
     }
 
