@@ -124,10 +124,31 @@ public class GameControllerPod
 
     public void UpdateUsedKey(string key, CharacterCellType type)
     {
-        if (!usedKeyList.Contains(key))
+        if (!usedKeyList.Contains(key) || type == CharacterCellType.Correct)
         {
             usedKeyList.Add(key);
             updateUsedKeyEvent.Invoke(key, type);
+        }
+    }
+
+    public CharacterCellType CheckCharacterInLine(
+        int index,
+        char guessedChar,
+        List<char> answerCharacterLineTemp
+    )
+    {
+        string answer = answerWord.ToLower();
+        if (answer.Contains(guessedChar) && !answerCharacterLineTemp.Contains(guessedChar))
+        {
+            answerCharacterLineTemp.Add(guessedChar);
+
+            return guessedChar == answer[index]
+                ? CharacterCellType.Correct
+                : CharacterCellType.WrongPosition;
+        }
+        else
+        {
+            return CharacterCellType.Wrong;
         }
     }
 }

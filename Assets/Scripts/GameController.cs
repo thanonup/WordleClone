@@ -102,26 +102,15 @@ public class GameController : MonoBehaviour
             (int)cell.GetCharacterCellData().position.y == (int)gameControllerPod.currentPosition.y
         );
 
-        string answer = gameControllerPod.answerWord.ToLower();
-
         for (int i = 0; i < currentLine.Count; i++)
         {
             CharacterCellView cell = currentLine[i];
             char guessedChar = cell.GetCurrentCharInput().ToLower()[0];
-            CharacterCellType characterCellType;
-
-            if (answer.Contains(guessedChar) && !answerCharacterLineTemp.Contains(guessedChar))
-            {
-                answerCharacterLineTemp.Add(guessedChar);
-                characterCellType =
-                    guessedChar == answer[i]
-                        ? CharacterCellType.Correct
-                        : CharacterCellType.WrongPosition;
-            }
-            else
-            {
-                characterCellType = CharacterCellType.Wrong;
-            }
+            CharacterCellType characterCellType = gameControllerPod.CheckCharacterInLine(
+                i,
+                guessedChar,
+                answerCharacterLineTemp
+            );
 
             cell.SetCharacterCellType(characterCellType);
             gameControllerPod.UpdateUsedKey(guessedChar.ToString(), characterCellType);
