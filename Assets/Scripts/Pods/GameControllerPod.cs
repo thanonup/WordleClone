@@ -73,7 +73,6 @@ public class GameControllerPod
             {
                 popupMessageEvent.Invoke("Answers is : " + answerWord.ToUpper());
                 gameStateEvent.Invoke(GameState.End);
-                return;
             }
             else
             {
