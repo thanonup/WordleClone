@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -136,11 +137,14 @@ public class GameControllerPod
         List<char> answerCharacterLineTemp
     )
     {
-        string answer = answerWord.ToLower();
-        if (answer.Contains(guessedChar) && !answerCharacterLineTemp.Contains(guessedChar))
+        List<char> answer = answerWord.ToLower().ToList();
+        if (
+            answer.Contains(guessedChar)
+            && answerCharacterLineTemp.Count(charInLine => guessedChar == charInLine)
+                < answer.Count(charAnswer => guessedChar == charAnswer)
+        )
         {
             answerCharacterLineTemp.Add(guessedChar);
-
             return guessedChar == answer[index]
                 ? CharacterCellType.Correct
                 : CharacterCellType.WrongPosition;

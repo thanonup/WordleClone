@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class GameController : MonoBehaviour
     [Header("")]
     [SerializeField]
     private GameObject characterPrefab;
+
+    [SerializeField]
+    private GridLayoutGroup gridLayoutGroup;
 
     [SerializeField]
     private GameObject spawnerObject;
@@ -35,6 +39,8 @@ public class GameController : MonoBehaviour
         virtualKeyboardView.DoInit(gameControllerPod);
         popupMessageView.DoInit(gameControllerPod);
         endGameView.DoInit(gameControllerPod);
+
+        gridLayoutGroup.constraintCount = (int)spawnGridSetting.x;
 
         TextAsset jsonFile = Resources.Load<TextAsset>("words");
         gameControllerPod.SetWords(JsonUtility.FromJson<WordData>(jsonFile.text).words);
